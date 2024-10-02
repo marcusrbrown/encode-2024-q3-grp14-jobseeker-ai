@@ -34,6 +34,6 @@ jobs:
         with:
           cache: pnpm
           node-version-file: '.tool-versions'
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --prefer-offline
       - run: pnpm run format:check
       - run: pnpm run build
