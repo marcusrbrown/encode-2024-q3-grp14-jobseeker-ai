@@ -1,5 +1,5 @@
-import { StreamableValue, readStreamableValue } from 'ai/rsc'
-import { useEffect, useState } from 'react'
+import {readStreamableValue, StreamableValue} from 'ai/rsc'
+import {useEffect, useState} from 'react'
 
 export const useStreamableText = (
   content: string | StreamableValue<string>

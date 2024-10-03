@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 
 export const useScrollAnchor = () => {
   const messagesRef = useRef<HTMLDivElement>(null)
@@ -28,7 +28,7 @@ export const useScrollAnchor = () => {
   }, [isAtBottom, isVisible])
 
   useEffect(() => {
-    const { current } = scrollRef
+    const {current} = scrollRef
 
     if (current) {
       const handleScroll = (event: Event) => {

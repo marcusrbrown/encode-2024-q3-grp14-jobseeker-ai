@@ -5,17 +5,16 @@ import '@/app/globals.css'
 
 import {cn} from '@/lib/utils'
 import {Toaster} from '@/components/ui/sonner'
-import {Header} from '@/components/header'
 import {Providers} from '@/components/providers'
-import {TailwindIndicator} from '@/components/tailwind-indicator'
+import JobAssistantChatbot from '@/app/jobai/main'
 
 export const metadata = {
   metadataBase: process.env.VERCEL_URL ? new URL(`https://${process.env.VERCEL_URL}`) : undefined,
   title: {
-    default: 'Next.js AI Chatbot',
-    template: `%s - Next.js AI Chatbot`
+    default: 'JobAI',
+    template: `%s - AI Chatbot for Job Seekers`
   },
-  description: 'An AI-powered chatbot template built with Next.js and Vercel.',
+  description: 'AI Chatbot for Job Seekers.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -30,21 +29,15 @@ export const viewport = {
   ]
 }
 
-interface RootLayoutProps {
-  children: React.ReactNode
-}
-
-export default function RootLayout({children}: RootLayoutProps) {
+export default function RootLayout() {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('font-sans antialiased', GeistSans.variable, GeistMono.variable)}>
         <Toaster position="top-center" />
         <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
-          </div>
-          <TailwindIndicator />
+          <main className="flex flex-col flex-1 bg-muted/50">
+            <JobAssistantChatbot />
+          </main>
         </Providers>
       </body>
     </html>
