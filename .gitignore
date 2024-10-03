@@ -35,3 +35,10 @@ yarn-error.log*
 .env
 .vercel
 .env*.local
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/.gitignore
+/.idea/encode-2024-q3-grp14-jobseeker-ai.iml
+/.idea/modules.xml
+/.idea/prettier.xml
+/.idea/vcs.xml
