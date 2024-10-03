@@ -35,5 +35,5 @@ jobs:
           cache: pnpm
           node-version-file: '.tool-versions'
       - run: pnpm install --prefer-offline
-      - run: pnpm run format:check
+      - run: pnpm prettier --check . --no-cache
       - run: pnpm run build
