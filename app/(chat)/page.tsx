@@ -7,7 +7,7 @@ import {Chat} from '@/components/chat'
 import {getMissingKeys} from '@/app/actions'
 
 export const metadata = {
-  title: 'Next.js AI Chatbot'
+  title: 'Job AI'
 }
 
 export default async function IndexPage() {

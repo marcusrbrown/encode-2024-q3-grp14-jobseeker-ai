@@ -11,10 +11,10 @@ import JobAssistantChatbot from '@/app/jobai/main'
 export const metadata = {
   metadataBase: process.env.VERCEL_URL ? new URL(`https://${process.env.VERCEL_URL}`) : undefined,
   title: {
-    default: 'Next.js AI Chatbot',
-    template: `%s - Next.js AI Chatbot`
+    default: 'JobAI',
+    template: `%s - AI Chatbot for Job Seekers`
   },
-  description: 'An AI-powered chatbot template built with Next.js and Vercel.',
+  description: 'AI Chatbot for Job Seekers.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
