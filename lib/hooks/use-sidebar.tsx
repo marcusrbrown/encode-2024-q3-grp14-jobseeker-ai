@@ -26,7 +26,7 @@ interface SidebarProviderProps {
   children: React.ReactNode
 }
 
-export function SidebarProvider({ children }: SidebarProviderProps) {
+export function SidebarProvider({children}: SidebarProviderProps) {
   const [isSidebarOpen, setSidebarOpen] = React.useState(true)
   const [isLoading, setLoading] = React.useState(true)
 
@@ -52,7 +52,7 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
 
   return (
     <SidebarContext.Provider
-      value={{ isSidebarOpen, toggleSidebar, isLoading }}
+      value={{isSidebarOpen, toggleSidebar, isLoading}}
     >
       {children}
     </SidebarContext.Provider>

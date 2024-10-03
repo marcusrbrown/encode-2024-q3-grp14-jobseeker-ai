@@ -1,40 +1,21 @@
 import 'server-only'
 
-import {
-  createAI,
-  createStreamableUI,
-  getMutableAIState,
-  getAIState,
-  streamUI,
-  createStreamableValue
-} from 'ai/rsc'
-import { openai } from '@ai-sdk/openai'
+import {createAI, createStreamableUI, createStreamableValue, getAIState, getMutableAIState, streamUI} from 'ai/rsc'
+import {openai} from '@ai-sdk/openai'
 
-import {
-  spinner,
-  BotCard,
-  BotMessage,
-  SystemMessage,
-  Stock,
-  Purchase
-} from '@/components/stocks'
+import {BotCard, BotMessage, Purchase, spinner, Stock, SystemMessage} from '@/components/stocks'
 
-import { z } from 'zod'
-import { EventsSkeleton } from '@/components/stocks/events-skeleton'
-import { Events } from '@/components/stocks/events'
-import { StocksSkeleton } from '@/components/stocks/stocks-skeleton'
-import { Stocks } from '@/components/stocks/stocks'
-import { StockSkeleton } from '@/components/stocks/stock-skeleton'
-import {
-  formatNumber,
-  runAsyncFnWithoutBlocking,
-  sleep,
-  nanoid
-} from '@/lib/utils'
-import { saveChat } from '@/app/actions'
-import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
-import { Chat, Message } from '@/lib/types'
-import { auth } from '@/auth'
+import {z} from 'zod'
+import {EventsSkeleton} from '@/components/stocks/events-skeleton'
+import {Events} from '@/components/stocks/events'
+import {StocksSkeleton} from '@/components/stocks/stocks-skeleton'
+import {Stocks} from '@/components/stocks/stocks'
+import {StockSkeleton} from '@/components/stocks/stock-skeleton'
+import {formatNumber, nanoid, runAsyncFnWithoutBlocking, sleep} from '@/lib/utils'
+import {saveChat} from '@/app/actions'
+import {SpinnerMessage, UserMessage} from '@/components/stocks/message'
+import {Chat, Message} from '@/lib/types'
+import {auth} from '@/auth'
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -151,7 +132,7 @@ async function submitUserMessage(content: string) {
         name: message.name
       }))
     ],
-    text: ({ content, done, delta }) => {
+    text: ({content, done, delta}) => {
       if (!textStream) {
         textStream = createStreamableValue('')
         textNode = <BotMessage content={textStream.value} />
@@ -188,7 +169,7 @@ async function submitUserMessage(content: string) {
             })
           )
         }),
-        generate: async function* ({ stocks }) {
+        generate: async function* ({stocks}) {
           yield (
             <BotCard>
               <StocksSkeleton />
@@ -211,7 +192,7 @@ async function submitUserMessage(content: string) {
                     type: 'tool-call',
                     toolName: 'listStocks',
                     toolCallId,
-                    args: { stocks }
+                    args: {stocks}
                   }
                 ]
               },
@@ -249,7 +230,7 @@ async function submitUserMessage(content: string) {
           price: z.number().describe('The price of the stock.'),
           delta: z.number().describe('The change in price of the stock')
         }),
-        generate: async function* ({ symbol, price, delta }) {
+        generate: async function* ({symbol, price, delta}) {
           yield (
             <BotCard>
               <StockSkeleton />
@@ -272,7 +253,7 @@ async function submitUserMessage(content: string) {
                     type: 'tool-call',
                     toolName: 'showStockPrice',
                     toolCallId,
-                    args: { symbol, price, delta }
+                    args: {symbol, price, delta}
                   }
                 ]
               },
@@ -284,7 +265,7 @@ async function submitUserMessage(content: string) {
                     type: 'tool-result',
                     toolName: 'showStockPrice',
                     toolCallId,
-                    result: { symbol, price, delta }
+                    result: {symbol, price, delta}
                   }
                 ]
               }
@@ -293,7 +274,7 @@ async function submitUserMessage(content: string) {
 
           return (
             <BotCard>
-              <Stock props={{ symbol, price, delta }} />
+              <Stock props={{symbol, price, delta}} />
             </BotCard>
           )
         }
@@ -315,7 +296,7 @@ async function submitUserMessage(content: string) {
               'The **number of shares** for a stock or currency to purchase. Can be optional if the user did not specify it.'
             )
         }),
-        generate: async function* ({ symbol, price, numberOfShares = 100 }) {
+        generate: async function* ({symbol, price, numberOfShares = 100}) {
           const toolCallId = nanoid()
 
           if (numberOfShares <= 0 || numberOfShares > 1000) {
@@ -331,7 +312,7 @@ async function submitUserMessage(content: string) {
                       type: 'tool-call',
                       toolName: 'showStockPurchase',
                       toolCallId,
-                      args: { symbol, price, numberOfShares }
+                      args: {symbol, price, numberOfShares}
                     }
                   ]
                 },
@@ -374,7 +355,7 @@ async function submitUserMessage(content: string) {
                       type: 'tool-call',
                       toolName: 'showStockPurchase',
                       toolCallId,
-                      args: { symbol, price, numberOfShares }
+                      args: {symbol, price, numberOfShares}
                     }
                   ]
                 },
@@ -426,7 +407,7 @@ async function submitUserMessage(content: string) {
             })
           )
         }),
-        generate: async function* ({ events }) {
+        generate: async function* ({events}) {
           yield (
             <BotCard>
               <EventsSkeleton />
@@ -449,7 +430,7 @@ async function submitUserMessage(content: string) {
                     type: 'tool-call',
                     toolName: 'getEvents',
                     toolCallId,
-                    args: { events }
+                    args: {events}
                   }
                 ]
               },
@@ -500,7 +481,7 @@ export const AI = createAI<AIState, UIState>({
     confirmPurchase
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), messages: [] },
+  initialAIState: {chatId: nanoid(), messages: []},
   onGetUIState: async () => {
     'use server'
 
@@ -517,13 +498,13 @@ export const AI = createAI<AIState, UIState>({
       return
     }
   },
-  onSetAIState: async ({ state }) => {
+  onSetAIState: async ({state}) => {
     'use server'
 
     const session = await auth()
 
     if (session && session.user) {
-      const { chatId, messages } = state
+      const {chatId, messages} = state
 
       const createdAt = new Date()
       const userId = session.user.id as string
@@ -582,7 +563,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
         ) : message.role === 'user' ? (
           <UserMessage>{message.content as string}</UserMessage>
         ) : message.role === 'assistant' &&
-          typeof message.content === 'string' ? (
+        typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
         ) : null
     }))
