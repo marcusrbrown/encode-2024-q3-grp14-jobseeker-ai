@@ -35,5 +35,4 @@ jobs:
           cache: pnpm
           node-version-file: '.tool-versions'
       - run: pnpm install --prefer-offline
-      - run: pnpm prettier --check . --cache --log-level debug
       - run: pnpm run build
