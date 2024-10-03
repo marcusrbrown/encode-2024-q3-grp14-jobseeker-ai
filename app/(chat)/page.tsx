@@ -7,7 +7,7 @@ import {Chat} from '@/components/chat'
 import {getMissingKeys} from '@/app/actions'
 
 export const metadata = {
-  title: 'Job AI'
+  title: 'JobSeeker AI'
 }
 
 export default async function IndexPage() {

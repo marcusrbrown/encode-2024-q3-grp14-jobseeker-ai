@@ -16,7 +16,7 @@ export default function Footer() {
     <footer className="bg-card text-card-foreground py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
         <div className="text-center md:text-left mb-4 md:mb-0">
-          <p>&copy; 2024 JobAI (#Encode-2024-Q3-G14). All rights reserved.</p>
+          <p>&copy; 2024 JobSeeker AI (#Encode-2024-Q3-G14). All rights reserved.</p>
         </div>
         <div className="flex space-x-4">
           {socialLinks.map(social => (
