@@ -39,3 +39,11 @@ export interface User extends Record<string, any> {
   password: string
   salt: string
 }
+
+export interface UploadResponse {
+  message: string
+}
+
+export interface UploadError {
+  error: string
+}
