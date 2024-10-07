@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "bootstrap": "pnpm run clean && pnpm install --frozen-lockfile --prefer-offline && pnpm run build",
+    "clean": "pnpx rimraf --glob \".next/cache/**\" \"**/node_modules/**/!(.pnpm)\" \"**/*.tsbuildinfo\"",
     "build": "next build",
     "dev": "next dev --turbo",
     "format:check": "prettier --check . --cache",
@@ -57,6 +59,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.10",
     "tailwindcss-animate": "^1.0.7",
