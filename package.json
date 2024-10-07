@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "bootstrap": "pnpm run clean && pnpm install --frozen-lockfile --prefer-offline && pnpm run build",
     "build": "next build",
+    "clean": "pnpx rimraf --glob \".next/cache/**\" \"**/node_modules/**/!(.pnpm)\" \"**/*.tsbuildinfo\"",
     "dev": "next dev --turbo",
     "format:check": "prettier --check . --cache",
     "format:write": "prettier --write . --cache",
@@ -49,7 +51,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@bfra.me/prettier-config": "^0.7.3",
+    "@bfra.me/prettier-config": "^0.7.4",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@tailwindcss/typography": "^0.5.14",
     "@types/node": "^22.5.0",
@@ -59,6 +61,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.10",
     "tailwindcss-animate": "^1.0.7",
