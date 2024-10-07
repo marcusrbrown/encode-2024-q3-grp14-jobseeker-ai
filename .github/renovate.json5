@@ -12,6 +12,25 @@
   automergeStrategy: 'squash',
   automergeType: 'pr',
 
+  commitMessageAction: 'Update',
+  commitMessageLowerCase: 'never',
+
+  lockFileMaintenance: {
+    commitMessageAction: 'Maintain lockfiles'
+  },
+  pin: {
+    commitMessageAction: 'Pin'
+  },
+  pinDigest: {
+    commitMessageAction: 'Pin (digest)'
+  },
+  replacement: {
+    commitMessageAction: 'Replace'
+  },
+  rollback: {
+    commitMessageAction: 'Rollback'
+  },
+
   packageRules: [
     {
       description: [
