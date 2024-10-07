@@ -47,6 +47,7 @@ export default function ImageUploadForm() {
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
+    setEnhancedImage(null)
     if (file) {
       if (file.size > MAX_FILE_SIZE) {
         setEnhanceError('File size exceeds 4 MB limit. Please choose a smaller image.')
