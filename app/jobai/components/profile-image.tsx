@@ -1,6 +1,7 @@
 'use client'
 
 import React, {useRef, useState} from 'react'
+import {Sparkles} from 'lucide-react'
 
 import {Alert, AlertDescription} from '@/components/ui/alert'
 import {Button} from '@/components/ui/button'
@@ -105,33 +106,37 @@ export default function ImageUploadForm() {
         />
       </div>
 
-      {preview && (
-        <div className="mt-4">
-          <h2 className="text-lg font-semibold mb-2">Original Image</h2>
-          <img src={preview} alt="Preview" className="max-w-full h-auto max-h-64 rounded-lg" />
-        </div>
-      )}
+      <div className={preview ? 'flex justify-between items-center gap-5' : 'hidden'}>
+        {preview && (
+          <div className="mt-4">
+            <h2 className="text-lg font-semibold mb-2">Original Image</h2>
+            <img src={preview} alt="Preview" className="max-w-full h-auto max-h-64 rounded-lg" />
+          </div>
+        )}
 
-      {enhancedImage && (
-        <div className="mt-4">
-          <h2 className="text-lg font-semibold mb-2">Enhanced Image</h2>
-          <img
-            src={enhancedImage}
-            alt="Enhanced"
-            className="max-w-full h-auto max-h-64 rounded-lg"
-          />
-        </div>
-      )}
+        {enhancedImage && (
+          <div className="mt-4">
+            <h2 className="text-lg font-semibold mb-2">Enhanced Image</h2>
+            <img
+              src={enhancedImage}
+              alt="Enhanced"
+              className="max-w-full h-auto max-h-64 rounded-lg"
+            />
+          </div>
+        )}
+      </div>
 
-      <Button type="submit" disabled={isEnhancing || !preview}>
-        {isEnhancing ? 'Enhancing...' : 'Enhance Automatically'}
-      </Button>
+      <div className="text-center">
+        <Button type="submit" disabled={isEnhancing || !preview}>
+          {isEnhancing ? 'Enhancing...' : 'Enhance Automatically'} <Sparkles className="h-3.5" />
+        </Button>
 
-      {enhanceError && (
-        <Alert variant="destructive">
-          <AlertDescription>{enhanceError}</AlertDescription>
-        </Alert>
-      )}
+        {enhanceError && (
+          <Alert variant="destructive">
+            <AlertDescription>{enhanceError}</AlertDescription>
+          </Alert>
+        )}
+      </div>
     </form>
   )
 }

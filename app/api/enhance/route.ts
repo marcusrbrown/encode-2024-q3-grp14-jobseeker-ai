@@ -24,10 +24,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({error: 'Image size exceeds 4 MB limit'}, {status: 400})
     }
 
-    const response = await openai.images.edit({
+    const response = await openai.images.createVariation({
       image: new File([imageBuffer], 'image.png', {type: 'image/png'}),
-      prompt:
-        'Enhance this image professionally. Improve lighting, add green background, color balance, and overall quality while maintaining the original composition.',
       n: 1,
       size: '1024x1024'
     })
