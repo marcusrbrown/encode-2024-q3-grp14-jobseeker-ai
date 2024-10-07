@@ -1,8 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 import {OpenAI} from 'openai'
 
-const openai = new OpenAI()
-
 export async function POST(request: NextRequest) {
   try {
     const {image} = await request.json()
@@ -22,7 +20,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({error: 'Image size exceeds 4 MB limit'}, {status: 400})
     }
 
-    const response = await openai.images.createVariation({
+    const response = await new OpenAI().images.createVariation({
       image: new File([imageBuffer], 'image.png', {type: 'image/png'}),
       n: 1,
       size: '1024x1024'
