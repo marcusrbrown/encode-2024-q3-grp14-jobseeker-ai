@@ -5,8 +5,7 @@
             "name": "Next.js: server-side",
             "type": "node-terminal",
             "request": "launch",
-            "command": "pnpm run dev",
-            "cwd": "${workspaceFolder}"
+            "command": "pnpm run dev"
         },
         {
             "name": "Next.js: client-side",
@@ -16,18 +15,15 @@
         },
         {
             "name": "Next.js: full stack",
-            "type": "node",
+            "type": "node-terminal",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/node_modules/.bin/next",
-            "runtimeArgs": ["--inspect"],
+            "command": "pnpm run dev",
             "skipFiles": ["<node_internals>/**"],
             "serverReadyAction": {
-                "action": "debugWithEdge",
-                "killOnServerStop": true,
+                "action": "debugWithChrome",
+                // "killOnServerStop": true,
                 "pattern": "- Local:.+(https?://.+)",
-                "uriFormat": "%s",
-                "webRoot": "${workspaceFolder}"
+                "uriFormat": "%s"
             }
         }
     ]
