@@ -1,21 +1,27 @@
 import 'server-only'
 
-import {createAI, createStreamableUI, createStreamableValue, getAIState, getMutableAIState, streamUI} from 'ai/rsc'
-import {openai} from '@ai-sdk/openai'
-
-import {BotCard, BotMessage, Purchase, spinner, Stock, SystemMessage} from '@/components/stocks'
-
-import {z} from 'zod'
-import {EventsSkeleton} from '@/components/stocks/events-skeleton'
-import {Events} from '@/components/stocks/events'
-import {StocksSkeleton} from '@/components/stocks/stocks-skeleton'
-import {Stocks} from '@/components/stocks/stocks'
-import {StockSkeleton} from '@/components/stocks/stock-skeleton'
-import {formatNumber, nanoid, runAsyncFnWithoutBlocking, sleep} from '@/lib/utils'
-import {saveChat} from '@/app/actions'
-import {SpinnerMessage, UserMessage} from '@/components/stocks/message'
-import {Chat, Message} from '@/lib/types'
 import {auth} from '@/auth'
+import {openai} from '@ai-sdk/openai'
+import {
+  createAI,
+  createStreamableUI,
+  createStreamableValue,
+  getAIState,
+  getMutableAIState,
+  streamUI
+} from 'ai/rsc'
+import {z} from 'zod'
+
+import {Chat, Message} from '@/lib/types'
+import {formatNumber, nanoid, runAsyncFnWithoutBlocking, sleep} from '@/lib/utils'
+import {BotCard, BotMessage, Purchase, spinner, Stock, SystemMessage} from '@/components/stocks'
+import {Events} from '@/components/stocks/events'
+import {EventsSkeleton} from '@/components/stocks/events-skeleton'
+import {SpinnerMessage, UserMessage} from '@/components/stocks/message'
+import {StockSkeleton} from '@/components/stocks/stock-skeleton'
+import {Stocks} from '@/components/stocks/stocks'
+import {StocksSkeleton} from '@/components/stocks/stocks-skeleton'
+import {saveChat} from '@/app/actions'
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -224,9 +230,7 @@ async function submitUserMessage(content: string) {
         parameters: z.object({
           symbol: z
             .string()
-            .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.'
-            ),
+            .describe('The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.'),
           price: z.number().describe('The price of the stock.'),
           delta: z.number().describe('The change in price of the stock')
         }),
@@ -285,9 +289,7 @@ async function submitUserMessage(content: string) {
         parameters: z.object({
           symbol: z
             .string()
-            .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.'
-            ),
+            .describe('The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.'),
           price: z.number().describe('The price of the stock.'),
           numberOfShares: z
             .number()
@@ -399,9 +401,7 @@ async function submitUserMessage(content: string) {
         parameters: z.object({
           events: z.array(
             z.object({
-              date: z
-                .string()
-                .describe('The date of the event, in ISO-8601 format'),
+              date: z.string().describe('The date of the event, in ISO-8601 format'),
               headline: z.string().describe('The headline of the event'),
               description: z.string().describe('The description of the event')
             })
@@ -562,8 +562,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
           })
         ) : message.role === 'user' ? (
           <UserMessage>{message.content as string}</UserMessage>
-        ) : message.role === 'assistant' &&
-        typeof message.content === 'string' ? (
+        ) : message.role === 'assistant' && typeof message.content === 'string' ? (
           <BotMessage content={message.content} />
         ) : null
     }))

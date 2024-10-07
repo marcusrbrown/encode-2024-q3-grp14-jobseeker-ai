@@ -10,9 +10,7 @@ interface SidebarContext {
   isLoading: boolean
 }
 
-const SidebarContext = React.createContext<SidebarContext | undefined>(
-  undefined
-)
+const SidebarContext = React.createContext<SidebarContext | undefined>(undefined)
 
 export function useSidebar() {
   const context = React.useContext(SidebarContext)
@@ -51,9 +49,7 @@ export function SidebarProvider({children}: SidebarProviderProps) {
   }
 
   return (
-    <SidebarContext.Provider
-      value={{isSidebarOpen, toggleSidebar, isLoading}}
-    >
+    <SidebarContext.Provider value={{isSidebarOpen, toggleSidebar, isLoading}}>
       {children}
     </SidebarContext.Provider>
   )
