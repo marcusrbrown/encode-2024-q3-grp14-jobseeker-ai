@@ -1,12 +1,8 @@
-import {readStreamableValue, StreamableValue} from 'ai/rsc'
 import {useEffect, useState} from 'react'
+import {readStreamableValue, StreamableValue} from 'ai/rsc'
 
-export const useStreamableText = (
-  content: string | StreamableValue<string>
-) => {
-  const [rawContent, setRawContent] = useState(
-    typeof content === 'string' ? content : ''
-  )
+export const useStreamableText = (content: string | StreamableValue<string>) => {
+  const [rawContent, setRawContent] = useState(typeof content === 'string' ? content : '')
 
   useEffect(() => {
     ;(async () => {

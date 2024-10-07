@@ -1,4 +1,4 @@
-import {type ClassValue, clsx} from 'clsx'
+import {clsx, type ClassValue} from 'clsx'
 import {customAlphabet} from 'nanoid'
 import {twMerge} from 'tailwind-merge'
 
@@ -11,10 +11,7 @@ export const nanoid = customAlphabet(
   7
 ) // 7-character random string
 
-export async function fetcher<JSON = any>(
-  input: RequestInfo,
-  init?: RequestInit
-): Promise<JSON> {
+export async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
   const res = await fetch(input, init)
 
   if (!res.ok) {
@@ -48,14 +45,11 @@ export const formatNumber = (value: number) =>
     currency: 'USD'
   }).format(value)
 
-export const runAsyncFnWithoutBlocking = (
-  fn: (...args: any) => Promise<any>
-) => {
+export const runAsyncFnWithoutBlocking = (fn: (...args: any) => Promise<any>) => {
   fn()
 }
 
-export const sleep = (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const getStringFromBuffer = (buffer: ArrayBuffer) =>
   Array.from(new Uint8Array(buffer))
