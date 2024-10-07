@@ -43,4 +43,4 @@ yarn-error.log*
 /.idea/prettier.xml
 /.idea/vcs.xml
 
-*.tsbuildinfo
+**/*.tsbuildinfo
