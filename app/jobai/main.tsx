@@ -13,36 +13,11 @@ import Sidebar from '@/app/jobai/components/sidebar'
 
 export default function JobAssistantChatbot() {
   const [message, setMessage] = useState('')
-  const [profileImage, setProfileImage] = useState<string | null>(null)
-  const [enhancedImage, setEnhancedImage] = useState<string | null>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle message submission
     setMessage('')
-  }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string)
-        setEnhancedImage(null) // Reset enhanced image when a new image is uploaded
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handleEnhanceImage = async () => {
-    if (profileImage) {
-      // Placeholder for DALL-E API call
-      console.log('Enhancing image with DALL-E...')
-      // Simulating API delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      // For demonstration, we're just using the same image
-      setEnhancedImage(profileImage)
-    }
   }
 
   return (
@@ -57,12 +32,7 @@ export default function JobAssistantChatbot() {
           </div>
         </div>
       </main>
-      <ProfileImageSection
-        profileImage={profileImage}
-        enhancedImage={enhancedImage}
-        handleImageUpload={handleImageUpload}
-        handleEnhanceImage={handleEnhanceImage}
-      />
+      <ProfileImageSection />
       <FeaturesSection />
       <HowItWorksSection />
       <Footer />
