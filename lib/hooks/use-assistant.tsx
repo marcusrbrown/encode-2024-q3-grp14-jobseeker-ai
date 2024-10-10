@@ -5,7 +5,7 @@
  * @description A custom hook to run a thread on an OpenAI assistant
  * @summary The hook is inspired by this code: https://github.com/Superexpert/openai-assistant-starter-kit/blob/7457d3a805416ade3a38d9f23215936e62b02c1e/app/ui/openai-assistant.tsx.
  */
-import {useCallback, useReducer, useRef} from 'react'
+import {useEffect, useReducer, useRef} from 'react'
 import {AssistantStream} from 'openai/lib/AssistantStream'
 import {FileObject} from 'openai/resources'
 
@@ -74,88 +74,103 @@ function reducer(state: State, action: Action): State {
  * @returns return.isLoading - Indicates if a message is currently being processed.
  * @returns return.error - Error message if an error occurred, otherwise null.
  * @returns return.threadId - The current thread ID, or null if no thread is active.
- * @returns return.submitMessage - Function to submit a new message to the assistant.
+ * @returns return.sendMessage - Function to send user content to the assistant.
  * @returns return.setThreadId - Function to set the current thread ID.
  */
 export function useAssistant(assistantId: string) {
   const [state, dispatch] = useReducer(reducer, initialState)
   const messageId = useRef(0)
 
-  const submitMessage = useCallback(
-    async (userMessage: string, attachments?: Partial<FileObject>[]) => {
-      dispatch({type: 'SET_STREAMING_MESSAGE', payload: getDefaultStreamingMessage()})
-      dispatch({type: 'SET_LOADING', payload: true})
-      messageId.current += 1
-      dispatch({
-        type: 'ADD_MESSAGE',
-        payload: {
-          id: messageId.current.toString(),
-          role: 'user',
-          content: userMessage,
-          createdAt: new Date()
+  useEffect(() => {
+    const createThread = async () => {
+      if (!state.threadId) {
+        try {
+          const response = await fetch('/api/threads', {
+            method: 'POST'
+          })
+          const {threadId} = (await response.json()) as {threadId: string}
+          dispatch({type: 'SET_THREAD_ID', payload: threadId})
+        } catch (error) {
+          if (error instanceof Error) {
+            dispatch({type: 'SET_ERROR', payload: error.message})
+          } else {
+            dispatch({
+              type: 'SET_ERROR',
+              payload: 'An unknown error occurred while creating thread'
+            })
+          }
         }
+      }
+    }
+    createThread()
+  }, [])
+
+  const sendMessage = async (userMessage: string, attachments?: Partial<FileObject>[]) => {
+    dispatch({type: 'SET_STREAMING_MESSAGE', payload: getDefaultStreamingMessage()})
+    dispatch({type: 'SET_LOADING', payload: true})
+    messageId.current += 1
+    dispatch({
+      type: 'ADD_MESSAGE',
+      payload: {
+        id: messageId.current.toString(),
+        role: 'user',
+        content: userMessage,
+        createdAt: new Date()
+      }
+    })
+
+    try {
+      const stream = await updateThread(assistantId, state.threadId, userMessage, attachments)
+      const run = AssistantStream.fromReadableStream(stream)
+
+      run.on('textDelta', (_, contentSnapshot) => {
+        const newStreamingMessage = {
+          ...state.streamingMessage,
+          content: contentSnapshot.value
+        }
+        dispatch({
+          type: 'SET_STREAMING_MESSAGE',
+          payload: newStreamingMessage
+        })
       })
 
-      try {
-        const stream = await updateThread(assistantId, state.threadId, userMessage, attachments)
-        const run = AssistantStream.fromReadableStream(stream)
+      run.on('messageDone', message => {
+        // Get the final message content
+        const finalContent = message.content[0].type == 'text' ? message.content[0].text.value : ''
 
-        run.on('messageCreated', message => {
-          dispatch({type: 'SET_THREAD_ID', payload: message.thread_id})
-        })
-
-        run.on('textDelta', (_, contentSnapshot) => {
-          const newStreamingMessage = {
-            ...state.streamingMessage,
-            content: contentSnapshot.value
+        messageId.current += 1
+        dispatch({
+          type: 'ADD_MESSAGE',
+          payload: {
+            id: messageId.current.toString(),
+            role: 'assistant',
+            content: finalContent,
+            createdAt: new Date()
           }
-          dispatch({
-            type: 'SET_STREAMING_MESSAGE',
-            payload: newStreamingMessage
-          })
         })
-
-        run.on('messageDone', message => {
-          // Get the final message content
-          const finalContent =
-            message.content[0].type == 'text' ? message.content[0].text.value : ''
-
-          messageId.current += 1
-          dispatch({
-            type: 'ADD_MESSAGE',
-            payload: {
-              id: messageId.current.toString(),
-              role: 'assistant',
-              content: finalContent,
-              createdAt: new Date()
-            }
-          })
-          dispatch({type: 'SET_LOADING', payload: false})
-        })
-
-        run.on('error', error => {
-          console.error(error.message)
-          dispatch({type: 'SET_ERROR', payload: error.message})
-          dispatch({type: 'SET_LOADING', payload: false})
-        })
-      } catch (error) {
-        if (error instanceof Error) {
-          dispatch({type: 'SET_ERROR', payload: error.message})
-        } else {
-          dispatch({type: 'SET_ERROR', payload: 'An unknown error occurred'})
-        }
         dispatch({type: 'SET_LOADING', payload: false})
+      })
+
+      run.on('error', error => {
+        console.error(error.message)
+        dispatch({type: 'SET_ERROR', payload: error.message})
+        dispatch({type: 'SET_LOADING', payload: false})
+      })
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatch({type: 'SET_ERROR', payload: error.message})
+      } else {
+        dispatch({type: 'SET_ERROR', payload: 'An unknown error occurred'})
       }
-    },
-    [state.threadId]
-  )
+      dispatch({type: 'SET_LOADING', payload: false})
+    }
+  }
 
   return {
     messages: state.messages,
     isLoading: state.isLoading,
     error: state.error,
     threadId: state.threadId,
-    submitMessage,
-    setThreadId: (threadId: string) => dispatch({type: 'SET_THREAD_ID', payload: threadId})
+    sendMessage
   }
 }

@@ -58,21 +58,3 @@ export async function updateThread(
 
   return stream.toReadableStream()
 }
-
-export async function uploadFile(name: string, content: string) {
-  'use server'
-
-  const file = new File([content], name)
-  const openai = new OpenAI()
-  const uploadedFile = await openai.files.create({
-    file,
-    purpose: 'assistants'
-  })
-
-  return {
-    id: uploadedFile.id,
-    name: uploadedFile.filename,
-    size: uploadedFile.bytes,
-    createdAt: new Date(uploadedFile.created_at)
-  }
-}

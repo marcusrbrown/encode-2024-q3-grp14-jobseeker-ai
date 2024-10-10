@@ -2,7 +2,6 @@
 
 import React, {useState} from 'react'
 
-import {uploadFile} from '@/lib/assistant/actions'
 import {useAssistant} from '@/lib/hooks/use-assistant'
 import ChatInterface from '@/app/jobai/components/chat-interface'
 import FeaturesSection from '@/app/jobai/components/features-section'
@@ -17,19 +16,12 @@ const assistantId = process.env.NEXT_PUBLIC_OPENAI_ASSISTANT_ID
 
 export default function JobAssistantChatbot() {
   const [message, setMessage] = useState('')
-  const {isLoading, messages, submitMessage} = useAssistant(assistantId!)
+  const {isLoading, messages, sendMessage, threadId} = useAssistant(assistantId!)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle message submission
     setMessage('')
-  }
-
-  const handleResumeUpload = async (name: string, content: string) => {
-    const {id, name: filename} = await uploadFile(name, content)
-
-    // Add a user message to begin the resume analysis with the attached document
-    await submitMessage('Please begin.', [{id, filename}])
   }
 
   // TODO: Do something with isLoading (i.e. show a toast or spinner)
@@ -44,7 +36,7 @@ export default function JobAssistantChatbot() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <ChatInterface message={message} setMessage={setMessage} handleSubmit={handleSubmit} />
-            <ResumeUploader uploadContent={handleResumeUpload} />
+            <ResumeUploader threadId={threadId} />
           </div>
         </div>
       </main>

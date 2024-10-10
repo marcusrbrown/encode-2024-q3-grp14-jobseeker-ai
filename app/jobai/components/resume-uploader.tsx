@@ -1,81 +1,93 @@
 'use client'
 
-import {useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import {Upload} from 'lucide-react'
 
+import {FileDetails} from '@/lib/types'
+
 interface ResumeUploaderProps {
-  uploadContent: (name: string, content: string) => Promise<void>
+  threadId: string | null
 }
 
-export default function ResumeUploader({uploadContent}: ResumeUploaderProps) {
-  const [file, setFile] = useState<File | null>(null)
+export default function ResumeUploader({threadId}: ResumeUploaderProps) {
+  const [files, setFiles] = useState<FileDetails[]>([])
   const [isUploading, setIsUploading] = useState(false)
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const interval = setInterval(fetchFiles, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const fetchFiles = useCallback(async () => {
+    if (!threadId) return
+    const response = await fetch(`/api/threads/${threadId}/files`)
+    setFiles(await response.json())
+  }, [threadId])
+
+  const uploadFile = useCallback(
+    async (file: File) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      await fetch(`/api/threads/${threadId}/files`, {
+        method: 'POST',
+        body: formData
+      })
+    },
+    [threadId]
+  )
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0]
     if (selectedFile) {
-      setFile(selectedFile)
+      await uploadFile(selectedFile)
     }
   }
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
     const droppedFile = event.dataTransfer.files?.[0]
     if (droppedFile) {
-      setFile(droppedFile)
+      await uploadFile(droppedFile)
     }
   }
 
-  const handleUpload = async () => {
-    if (!file) return
-
-    setIsUploading(true)
-    try {
-      const content = await readFileContent(file)
-      await uploadContent(file.name, content)
-    } catch (error) {
-      console.error('Error uploading file:', error)
-    } finally {
-      setIsUploading(false)
-    }
-  }
-
-  const readFileContent = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = event => resolve(event.target?.result as string)
-      reader.onerror = error => reject(error)
-
-      if (file.type === 'application/pdf') {
-        reader.readAsArrayBuffer(file)
-      } else {
-        reader.readAsText(file)
-      }
-    })
-  }
+  // Disable the container if threadId is missing
+  const isDisabled = !threadId
 
   return (
-    <div className="lg:w-[30%] bg-card rounded-lg shadow-md p-6 space-y-6">
+    <div className={`flex justify-center ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
       <div
         className="border-2 border-dashed border-muted rounded-lg p-4 text-center"
         onDrop={handleDrop}
         onDragOver={e => e.preventDefault()}
       >
-        <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
-        <p className="mt-2 text-sm text-muted-foreground">
-          {file ? file.name : 'Drag and drop your resume here, or click to upload'}
-        </p>
-        <input type="file" className="hidden" onChange={handleFileChange} accept=".txt,.md,.pdf" />
-      </div>
-      {file && (
-        <button
-          onClick={handleUpload}
-          disabled={isUploading}
-          className="w-full bg-primary text-primary-foreground rounded-md py-2"
+        <label
+          htmlFor="file-upload"
+          className={`font-semibold ${isDisabled ? 'pointer-events-none text-gray-400' : ''}`}
         >
-          {isUploading ? 'Uploading...' : 'Upload Resume'}
-        </button>
-      )}
+          <Upload
+            className={`mx-auto h-12 w-12 ${isDisabled ? 'text-gray-400' : 'text-muted-foreground'}`}
+          />
+          Drag and drop your resume here, or click to upload
+        </label>
+        <input
+          type="file"
+          id="file-upload"
+          name="file-upload"
+          className="hidden"
+          onChange={handleFileChange}
+          accept=".txt,.md,.pdf"
+          disabled={isDisabled}
+        />
+      </div>
+      <div className={`overflow-y-auto flex ${files.length > 0 ? 'flex-grow' : ''}`}>
+        {files.map(file => (
+          <div key={file.file_id} className="flex flex-col items-center">
+            <p className="text-sm text-muted-foreground">{file.filename}</p>
+            <p className="text-sm text-muted-foreground">{file.status}</p>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
