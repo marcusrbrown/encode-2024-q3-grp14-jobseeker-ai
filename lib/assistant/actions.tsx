@@ -1,7 +1,8 @@
 'use server'
 
-import OpenAI from 'openai'
 import {FileObject} from 'openai/resources'
+
+import {openai} from '@/lib/openai'
 
 export async function updateThread(
   assistantId: string,
@@ -10,8 +11,6 @@ export async function updateThread(
   attachments?: Partial<FileObject>[]
 ) {
   'use server'
-
-  const openai = new OpenAI()
 
   if (!threadId) {
     // Create a thread if not provided

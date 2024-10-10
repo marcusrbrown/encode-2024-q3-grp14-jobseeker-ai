@@ -1,9 +1,7 @@
 import {NextResponse, type NextRequest} from 'next/server'
-import OpenAI from 'openai'
 
+import {openai} from '@/lib/openai'
 import type {FileDetails} from '@/lib/types'
-
-const openai = new OpenAI()
 
 export const runtime = 'edge'
 

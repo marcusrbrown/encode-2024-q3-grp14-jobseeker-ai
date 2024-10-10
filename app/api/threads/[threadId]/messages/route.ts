@@ -1,7 +1,6 @@
 import {NextResponse, type NextRequest} from 'next/server'
-import {OpenAI} from 'openai'
 
-const openai = new OpenAI()
+import {openai} from '@/lib/openai'
 
 export async function POST(
   request: NextRequest,
