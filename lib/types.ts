@@ -39,3 +39,12 @@ export interface User extends Record<string, any> {
   password: string
   salt: string
 }
+
+/**
+ * Represents the details of a file, including its ID, filename, and vectorstore status.
+ */
+export type FileDetails = {
+  file_id: string
+  filename: string
+  status: string
+}
