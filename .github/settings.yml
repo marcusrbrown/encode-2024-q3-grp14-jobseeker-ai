@@ -2,6 +2,7 @@
 _extends: .github:common-settings.yaml
 
 repository:
+  archived: true
   homepage: https://encode-2024-q3-grp14-jobseeker-ai.vercel.app/
   topics: >-
     ai,
